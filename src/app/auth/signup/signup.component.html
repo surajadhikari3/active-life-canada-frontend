@@ -1,0 +1,35 @@
+<div class="flex min-h-full flex-1 justify-center items-center flex-col px-6 py-12 lg:px-8">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()"
+        class="w-full max-w-lg bg-white p-8 rounded-2xl shadow-xl space-y-6">
+    <h2 class="text-2xl font-bold text-gray-800">Family Sign Up</h2>
+
+    <ng-container *ngFor="let field of fields">
+      <div class="sm:col-span-4">
+        <label class="block text-sm font-medium text-gray-700">{{ field.label }}</label>
+        <div class="mt-2">
+          <input [formControlName]="field.name" [type]="field.type" [placeholder]="field.placeholder"
+                 class="block w-full rounded-lg border-gray-300 p-3 text-gray-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" />
+        </div>
+      </div>
+    </ng-container>
+
+    <div class="sm:col-span-4">
+      <label class="block text-sm font-medium text-gray-700">Preferred Contact</label>
+      <div class="relative mt-2">
+        <select formControlName="preferredContact"
+                class="block w-full appearance-none rounded-lg border-gray-300 p-3 text-gray-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+          <option value="">Select an option</option>
+          <option value="email">Email</option>
+          <option value="phone">Phone</option>
+          <option value="sms">SMS</option>
+        </select>
+      </div>
+    </div>
+
+    <button type="submit"
+            [disabled]="form.invalid || submitting"
+            class="w-full bg-indigo-600 text-white py-3 rounded-lg shadow-md hover:bg-indigo-700 transition duration-300">
+      {{ submitting ? 'Submitting...' : 'Submit' }}
+    </button>
+  </form>
+</div>
