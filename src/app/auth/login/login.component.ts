@@ -5,7 +5,6 @@ import {HttpClient} from '@angular/common/http';
 import {ToastService} from '../../shared/toast.service';
 import {AuthService} from '../auth.service';
 import {API_ENDPOINTS} from '../../shared/constants';
-import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   standalone: true,
@@ -14,7 +13,6 @@ import { HttpClientModule } from '@angular/common/http';
     ReactiveFormsModule,
   ],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.scss'
 })
 export class LoginComponent {
   form: FormGroup;

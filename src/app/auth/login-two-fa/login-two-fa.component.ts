@@ -15,7 +15,6 @@ import {CommonModule} from '@angular/common';
     CommonModule
   ],
   templateUrl: './login-two-fa.component.html',
-  styleUrl: './login-two-fa.component.scss'
 })
 export class LoginTwoFaComponent {
 
@@ -30,7 +29,7 @@ export class LoginTwoFaComponent {
     private toast: ToastService
   ) {
     this.form = this.fb.group({
-      familyMemberId: [{ value: '12345', disabled: true }, Validators.required], // Load from service or session
+      familyMemberId: [{ value: this.authService.tempLogin, disabled: true }, Validators.required], // Load from service or session
       otp: ['', [Validators.required, Validators.pattern(/^[0-9]+$/)]]
     });
   }
@@ -46,7 +45,7 @@ export class LoginTwoFaComponent {
 
     this.http.post(`${API_ENDPOINTS.AUTHENTICATION_BASE_URL}/login/2fa`, data).subscribe({
       next: (res: any) => {
-        localStorage.setItem('authToken', res.token);
+        this.authService.setToken(res.token);
         this.authService.updateAuthenticationStatus({
           memberLoginId: data.familyMemberId,
           isActive: true

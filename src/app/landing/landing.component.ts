@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
 import {CommonModule} from '@angular/common';
+import {RouterLink} from '@angular/router';
 
 @Component({
   selector: 'app-landing',
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   template: `
   <div class="bg-gray-50">
   <section class="bg-blue-300 text-white text-center py-16">
@@ -19,7 +20,7 @@ import {CommonModule} from '@angular/common';
       <h2 class="text-3xl font-bold mb-8">Our Popular Activities</h2>
       <div class="grid md:grid-cols-2 gap-12">
         <div class="bg-white rounded-lg shadow-md overflow-hidden">
-          <img src="/assets/category/swim-image.jpg" alt="Swimming" class="w-full h-64 object-cover" />
+          <img [src]="images.swimming" alt="Swimming" class="w-full h-64 object-cover" />
           <div class="p-6">
             <h3 class="text-2xl font-semibold mb-4">Swimming</h3>
             <p class="text-gray-600 mb-4">
@@ -30,7 +31,7 @@ import {CommonModule} from '@angular/common';
         </div>
 
         <div class="bg-white rounded-lg shadow-md overflow-hidden">
-          <img src="/assets/category/skating-image.jpg" alt="Skating" class="w-full h-64 object-cover" />
+          <img [src]="images.skating" alt="Skating" class="w-full h-64 object-cover" />
           <div class="p-6">
             <h3 class="text-2xl font-semibold mb-4">Skating</h3>
             <p class="text-gray-600 mb-4">
@@ -49,7 +50,7 @@ import {CommonModule} from '@angular/common';
       <p class="text-xl mb-8">
         Active Life Canada offers residents easy access to a variety of activities that promote health and wellness.
       </p>
-      <img src="/assets/category/city-image.jpg" alt="City Overview" class="mx-auto rounded-lg shadow-lg" />
+      <img [src]="images.city" alt="City Overview" class="mx-auto rounded-lg shadow-lg" />
     </div>
   </section>
 
@@ -64,5 +65,12 @@ import {CommonModule} from '@angular/common';
   `
 })
 export class LandingComponent {
+
+   images = {
+    swimming: "https://media.istockphoto.com/id/465383082/photo/female-swimmer-at-the-swimming-pool.jpg?s=1024x1024&w=is&k=20&c=xVP9ZlVFLgxxHQTE8ND3KtM8nIj8IzO9U7P19YEOFsk=",
+    skating: "https://media.istockphoto.com/id/1186323725/photo/strategy-to-win-in-ice-hockey.jpg?s=1024x1024&w=is&k=20&c=dgsUqsEq5XsJNvIvIp1hCecIXnkbkL5MUqK6d3kQJm4=",
+    city: "https://media.istockphoto.com/id/1209988354/photo/young-man-skateboarding-in-los-angeles.jpg?s=1024x1024&w=is&k=20&c=FE52cFnj9rwmp9W4OT1hwh98BX4Cor4JSukm3HfzNCs=",
+  };
+
 
 }

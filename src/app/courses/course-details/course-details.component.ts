@@ -1,13 +1,16 @@
-import { Component } from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
+import {Component, inject} from '@angular/core';
+import {Router} from '@angular/router';
 import {FormsModule} from '@angular/forms';
-import {NgClass} from '@angular/common';
+import {CommonModule} from '@angular/common';
+import {MatSnackBar} from '@angular/material/snack-bar';
+import {CartStore, OfferedCourse} from '../../cart/cart.store';
 
 @Component({
   selector: 'app-course-details',
+  standalone: true,
   imports: [
     FormsModule,
-    NgClass
+    CommonModule
   ],
   template: `
     <div *ngIf="course" class="bg-gray-100 mt-20">
@@ -33,6 +36,7 @@ import {NgClass} from '@angular/common';
           <p class="text-gray-700 mb-2"><strong>Start Date:</strong> {{ course.startDate }}</p>
           <p class="text-gray-700 mb-2"><strong>End Date:</strong> {{ course.endDate }}</p>
           <p class="text-gray-700 mb-6">{{ course.courseDescription }}</p>
+          <pre>{{ course.offeredCourseFeeDto | json }}</pre>
 
           <label class="block text-lg font-semibold mb-2">Select Fee Type:</label>
           <select
@@ -40,24 +44,33 @@ import {NgClass} from '@angular/common';
             [(ngModel)]="selectedFeeType">
             <option value="" disabled>Select a Fee Type</option>
             <option *ngFor="let f of course.offeredCourseFeeDto" [value]="f.feeType">
-              {{ f.feeType }} - "$"{{ f.courseFee }}
+              {{ f.feeType }} - <span>$</span>{{ f.courseFee }}
             </option>
           </select>
 
-          <button class="mt-4 bg-teal-600 text-white px-6 py-3 rounded-lg hover:bg-teal-700">
+          <button
+            class="mt-4 bg-teal-600 text-white px-6 py-3 rounded-lg hover:bg-teal-700"
+            (click)="addToCart()"
+            [disabled]="!selectedFeeType"
+          >
             Add to Cart 🛒
           </button>
         </div>
       </div>
     </div>
-  `,
+  `
 })
 export class CourseDetailsComponent {
   course: any;
   selectedFeeType = '';
 
-  constructor(private route: Router) {
-    this.course = this.route.getCurrentNavigation()?.extras?.state?.['course'];
+  private cartStore = inject(CartStore);
+  private snackBar = inject(MatSnackBar);
+  private router = inject(Router);
+
+  constructor() {
+    this.course = this.router.getCurrentNavigation()?.extras?.state?.['course'] || history.state['course'];
+    console.log("course", this.course);
   }
 
   getImageUrl(name: string): string {
@@ -71,4 +84,27 @@ export class CourseDetailsComponent {
     return `/assets/category/${map[name] || 'default-image.jpg'}`;
   }
 
+  addToCart() {
+    console.log("course", this.course);
+    const feeExists = this.course.offeredCourseFeeDto.some((f: OfferedCourse) => f.feeType === this.selectedFeeType);
+    if (!feeExists) {
+      this.snackBar.open('Invalid fee selection', 'Close', {duration: 2000});
+      return;
+    }
+
+    // const alreadyInCart = this.cartStore.cartItems().some(i => i.barCode === this.course.barCode);
+    // if (alreadyInCart) {
+    //   this.snackBar.open('Item already in cart', 'Close', { duration: 2000 });
+    //   return;
+    // }
+
+    const selected = {
+      ...this.course,
+      offeredCourseFeeDto: this.course.offeredCourseFeeDto.filter((f: OfferedCourse) => f.feeType === this.selectedFeeType)
+    };
+
+    this.cartStore.addItem(selected);
+    this.cartStore.toggleDrawer(true);
+    this.snackBar.open('Item added to cart!', 'Close', {duration: 2000});
+  }
 }
