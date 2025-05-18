@@ -9,6 +9,7 @@ import {CourseDetailsComponent} from './courses/course-details/course-details.co
 import {authGuard} from './auth/auth.guard';
 import {DashboardLayoutComponent} from './dashboard/dashboard-layout.component';
 import {HomeDashboardComponent} from './dashboard/home-dashboard.component';
+import {FamilyMemberComponent} from './dashboard/family-member.component';
 
 
 export const routes: Routes = [
@@ -26,9 +27,10 @@ export const routes: Routes = [
       {
         path: 'dashboard',
         component: DashboardLayoutComponent,
+        canActivate: [authGuard],
         children: [
           { path: 'home', component: HomeDashboardComponent },
-        //   { path: 'family', component: FamilyMemberComponent },
+          { path: 'family', component: FamilyMemberComponent },
         //   { path: 'course-registration', component: RegisteredCourseComponent },
         //   { path: 'cart', component: CartDrawerComponent }
         ]

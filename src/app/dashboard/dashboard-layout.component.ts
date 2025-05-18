@@ -7,7 +7,7 @@ import { SidebarComponent } from './sidebar.component';
   standalone: true,
   imports: [RouterOutlet, SidebarComponent],
   template: `
-    <div class="flex h-screen">
+    <div class="flex h-screen -mt-4 -ml-8">
       <app-sidebar></app-sidebar>
       <div class="flex-1 overflow-y-auto p-6 bg-gray-100">
         <router-outlet></router-outlet>
@@ -15,4 +15,5 @@ import { SidebarComponent } from './sidebar.component';
     </div>
   `
 })
-export class DashboardLayoutComponent {}
+export class DashboardLayoutComponent {
+}

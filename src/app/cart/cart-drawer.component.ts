@@ -66,7 +66,7 @@ export class CartDrawerComponent {
   }
 
   checkout() {
-    const user = JSON.parse(localStorage.getItem('authUser') || '{}');
+    // const user = JSON.parse(localStorage.getItem('authUser') || '{}');
     const memberLoginId = this.authService.tempLogin;
     const payload = {
       cartId: null,

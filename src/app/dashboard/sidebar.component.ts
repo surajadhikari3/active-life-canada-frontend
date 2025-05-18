@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import {CommonModule} from '@angular/common';
 
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [RouterModule],
+  imports: [RouterModule, CommonModule],
   template: `
     <aside class="w-64 bg-gray-800 text-white h-full flex flex-col">
       <div class="p-4 text-xl font-bold border-b border-gray-700">Dashboard</div>
