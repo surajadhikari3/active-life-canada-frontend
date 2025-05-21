@@ -12,7 +12,6 @@ import { API_ENDPOINTS } from '../shared/constants';
   imports: [CommonModule, HighchartsChartModule],
   template: `
     <div class="space-y-6">
-      <!-- Info Header -->
       <div class="bg-white p-6 rounded-lg shadow flex justify-between items-center">
 <!--        <button class="bg-blue-600 text-white px-4 py-2 rounded shadow">➕ Add Family Member</button>-->
         <div class="space-x-4 text-sm" *ngIf="familyGroup">

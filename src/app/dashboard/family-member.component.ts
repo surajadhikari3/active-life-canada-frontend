@@ -17,12 +17,15 @@ ModuleRegistry.registerModules([AllCommunityModule]);
     <div class="bg-white p-6 rounded-lg shadow">
       <h2 class="text-lg font-semibold mb-4">Family Members</h2>
       <ag-grid-angular
-        class="ag-theme-quartz"
+        class="ag-theme-quartz-dark"
         style="width: 100%; height: 800px"
         [rowData]="familyData()"
         [columnDefs]="columnDefs"
-        [defaultColDef]="{ resizable: true, flex: 1 }"
+        [defaultColDef]="defaultColDef"
         [pagination]="true"
+        [paginationPageSize]="10"
+        [paginationPageSizeSelector] = "[10,20]"
+        rowSelection="multiple"
         [domLayout]="'autoHeight'">
       </ag-grid-angular>
     </div>
@@ -33,6 +36,14 @@ export class FamilyMemberComponent implements OnInit {
   private authService = inject(AuthService);
 
   familyData = signal<any[]>([]);
+
+
+  defaultColDef: ColDef = {
+    resizable: true,
+    flex: 1,
+    filter: true,
+    floatingFilter: true, //it will give the searchbar for searching
+  }
 
   columnDefs: ColDef[] = [
     { field: 'familyMemberId', headerName: 'ID' },
