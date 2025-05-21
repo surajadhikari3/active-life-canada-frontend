@@ -4,6 +4,8 @@ import {FormsModule} from '@angular/forms';
 import {CommonModule} from '@angular/common';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {CartStore, OfferedCourse} from '../../cart/cart.store';
+import { Location } from '@angular/common';
+
 
 @Component({
   selector: 'app-course-details',
@@ -13,8 +15,21 @@ import {CartStore, OfferedCourse} from '../../cart/cart.store';
     CommonModule
   ],
   template: `
-    <div *ngIf="course" class="bg-gray-100 mt-20">
-      <div class="max-w-6xl mx-auto px-4 py-8 flex flex-wrap gap-6">
+
+
+
+    <div *ngIf="course" class="relative bg-gray-100">
+
+      <div class="relative bg-gray-100">
+        <!-- Back Button -->
+        <button
+          class="absolute right-4 bg-gray-400 text-white px-4 py-2 rounded-lg hover:bg-gray-500 z-10"
+          (click)="goBack()"
+        >
+          ← Back to Courses
+        </button>
+
+        <div class="max-w-6xl mx-auto px-4 py-8 flex flex-wrap gap-6">
         <div class="w-full md:w-1/2">
           <img
             [src]="getImageUrl(course.courseName)"
@@ -36,7 +51,6 @@ import {CartStore, OfferedCourse} from '../../cart/cart.store';
           <p class="text-gray-700 mb-2"><strong>Start Date:</strong> {{ course.startDate }}</p>
           <p class="text-gray-700 mb-2"><strong>End Date:</strong> {{ course.endDate }}</p>
           <p class="text-gray-700 mb-6">{{ course.courseDescription }}</p>
-          <pre>{{ course.offeredCourseFeeDto | json }}</pre>
 
           <label class="block text-lg font-semibold mb-2">Select Fee Type:</label>
           <select
@@ -67,6 +81,7 @@ export class CourseDetailsComponent {
   private cartStore = inject(CartStore);
   private snackBar = inject(MatSnackBar);
   private router = inject(Router);
+  private location = inject(Location);
 
   constructor() {
     this.course = this.router.getCurrentNavigation()?.extras?.state?.['course'] || history.state['course'];
@@ -84,6 +99,11 @@ export class CourseDetailsComponent {
     return `/assets/category/${map[name] || 'default-image.jpg'}`;
   }
 
+  goBack() {
+    this.location.back();
+  }
+
+
   addToCart() {
     console.log("course", this.course);
     const feeExists = this.course.offeredCourseFeeDto.some((f: OfferedCourse) => f.feeType === this.selectedFeeType);
@@ -91,12 +111,6 @@ export class CourseDetailsComponent {
       this.snackBar.open('Invalid fee selection', 'Close', {duration: 2000});
       return;
     }
-
-    // const alreadyInCart = this.cartStore.cartItems().some(i => i.barCode === this.course.barCode);
-    // if (alreadyInCart) {
-    //   this.snackBar.open('Item already in cart', 'Close', { duration: 2000 });
-    //   return;
-    // }
 
     const selected = {
       ...this.course,

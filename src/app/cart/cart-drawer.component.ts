@@ -1,9 +1,9 @@
-import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
-import { CartStore } from './cart.store';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import {Component, inject} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {Router} from '@angular/router';
+import {HttpClient} from '@angular/common/http';
+import {CartStore} from './cart.store';
+import {MatSnackBar} from '@angular/material/snack-bar';
 import {API_ENDPOINTS} from '../shared/constants';
 import {AuthService} from '../auth/auth.service';
 
@@ -14,7 +14,8 @@ import {AuthService} from '../auth/auth.service';
   template: `
     <div *ngIf="store.isDrawerOpen()" class="fixed inset-0 bg-black/30 z-40" (click)="store.toggleDrawer(false)"></div>
 
-    <aside *ngIf="store.isDrawerOpen()" class="fixed top-0 right-0 z-50 bg-white shadow-lg w-96 h-full overflow-auto p-6">
+    <aside *ngIf="store.isDrawerOpen()"
+           class="fixed top-0 right-0 z-50 bg-white shadow-lg w-96 h-full overflow-auto p-6">
       <h2 class="text-xl font-bold mb-4">Your Cart</h2>
 
       <div *ngIf="store.cartItems().length === 0" class="text-gray-500 text-center mt-10">
@@ -62,34 +63,34 @@ export class CartDrawerComponent {
 
   remove(barCode: string) {
     this.store.removeItem(barCode);
-    this.snack.open('Item removed from cart', 'Close', { duration: 2000 });
+    this.snack.open('Item removed from cart', 'Close', {duration: 2000});
   }
 
   checkout() {
-    // const user = JSON.parse(localStorage.getItem('authUser') || '{}');
-    const memberLoginId = this.authService.tempLogin;
+    const user = JSON.parse(localStorage.getItem('authUser') || '{}');
+    console.log("user", user);
     const payload = {
       cartId: null,
       cartItems: this.store.cartItems(),
       isActive: true,
-      familyMemberId: memberLoginId,
+      familyMemberId: user?.memberLoginId,
       cartCount: this.store.cartCount(),
       totalPrice: this.store.totalPrice()
     };
 
-    this.http.post(API_ENDPOINTS.CART, payload,{
+    this.http.post(API_ENDPOINTS.CART, payload, {
       headers: {
-        'X-family-member-id' : String (memberLoginId)
+        'X-family-member-id': String(user?.memberLoginId)
       }
     }).subscribe({
       next: () => {
         this.store.resetCart();
         this.router.navigate(['/dashboard/home']);
-        this.snack.open('Successfully registered to the course!', 'Close', { duration: 3000 });
+        this.snack.open('Successfully registered to the course!', 'Close', {duration: 3000});
       },
       error: (err) => {
         const msg = err?.error?.message || 'Something went wrong while registering';
-        this.snack.open(msg, 'Close', { duration: 3000 });
+        this.snack.open(msg, 'Close', {duration: 3000});
       }
     });
   }
