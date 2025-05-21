@@ -1,4 +1,4 @@
-import {Component, effect} from '@angular/core';
+import {Component, effect, signal} from '@angular/core';
 import {CourseService} from '../course.service';
 import {FormsModule} from '@angular/forms';
 import {RouterLink} from '@angular/router';
@@ -16,17 +16,20 @@ import {NgForOf} from '@angular/common';
       <div class="flex items-center mb-6">
         <input
           type="text"
-          [(ngModel)]="search"
+          [ngModel]="search()"
+          (ngModelChange)="search.set($event)"
           placeholder="Search courses..."
           class="w-full p-3 border rounded-lg shadow-sm focus:ring focus:ring-blue-300"
         />
+
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        <ng-container *ngFor="let course of filteredCourses">
-          <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300">
-            <img  [src]="getImageUrl(course.courseName)" [alt]="course.courseName"
-                 class="w-full h-40 object-cover rounded-lg mb-4" />
+        <ng-container *ngFor="let course of filteredCourses()">
+          <div
+            class="p-4 bg-white border border-gray-200 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300">
+            <img [src]="getImageUrl(course.courseName)" [alt]="course.courseName"
+                 class="w-full h-40 object-cover rounded-lg mb-4"/>
             <h6 class="text-xl font-semibold text-gray-900 mb-2">{{ course.barCode }}</h6>
             <p class="text-gray-700 mb-4">{{ course.courseDescription }}</p>
             <a [routerLink]="['/courses/details']" [state]="{ course }"
@@ -40,17 +43,19 @@ import {NgForOf} from '@angular/common';
   `
 })
 export class CourseListComponent {
-  search = '';
-  filteredCourses: any[] = [];
+  search = signal('');
+  filteredCourses = signal<any[]>([]);
 
   constructor(public courseService: CourseService) {
     courseService.loadCourses();
 
     effect(() => {
       const all = courseService.courses();
-      this.filteredCourses = this.search
-        ? all.filter(c => c.courseName?.toLowerCase().includes(this.search.toLowerCase()))
+      const query = this.search().toLowerCase();
+      const result = query
+        ? all.filter(c => c.courseName?.toLowerCase().includes(query))
         : all;
+      this.filteredCourses.set(result);
     });
   }
 
